@@ -1,0 +1,1107 @@
+Scripture Memory App
+Product Requirements & Design Specification
+Version 1.0 (Consolidated Concept Document)
+Purpose
+
+Create a completely free Scripture memorization application designed to help people learn Bible verses, actively retrieve them from memory, and retain them for the long term.
+
+The application is not primarily a Bible-reading platform, devotional app, or conventional flashcard system.
+
+Its purpose is to help Scripture become something that can be recalled and recited long after initial memorization.
+
+Guiding Philosophy
+
+The goal isn't to complete the app. The goal is to get Scripture into the heart and keep it there.
+
+1. Core Design Philosophy
+
+The application should be built around these principles:
+
+Scripture first
+Retrieval over rereading
+Spaced practice over cramming
+Randomized review timing
+Adaptive scheduling
+Positive reinforcement
+Self-paced learning
+Long-term retention
+User-owned data
+Completely free
+No advertisements
+No mandatory developer account
+Offline-first operation
+
+The application should encourage consistent engagement without generating guilt.
+
+2. Research Foundation
+
+The memorization engine should be built upon two foundational concepts from memory research.
+
+Retrieval Practice
+
+Actively attempting to recall information improves memory more than passive review.
+
+The application should increasingly ask:
+
+"Can you say it?"
+
+rather than repeatedly displaying the verse.
+
+Preferred progression:
+
+Plain Text
+1
+Read
+2
+→ Hide
+3
+→ Recall
+4
+→ Check
+5
+→ Correct
+6
+→ Recall Later
+Show more lines
+
+rather than:
+
+Plain Text
+1
+Read
+2
+→ Read
+3
+→ Read
+4
+→ Read
+Show more lines
+Spaced Practice
+
+Memory is strengthened when retrieval opportunities are distributed over time.
+
+The application should schedule review sessions across days, weeks, months, and eventually years.
+
+The scheduling system should remain flexible so multiple memory models can be evaluated.
+
+3. Randomized Review Timing
+
+The application should support controlled schedule variability.
+
+Rather than:
+
+Plain Text
+1
+1 day
+2
+3 days
+3
+7 days
+4
+14 days
+5
+30 days
+Show more lines
+
+the scheduler should establish a target interval and then select a review time within an acceptable range.
+
+Example:
+
+Plain Text
+1
+Target Interval: 14 days
+2
+Review Window: 12-16 days
+3
+Actual Review: Day 13
+Show more lines
+
+or
+
+Plain Text
+1
+Target Interval: 30 days
+2
+Review Window: 24-36 days
+3
+Actual Review: Day 33
+Show more lines
+
+The purpose is to test real memory rather than memory tied to predictable review patterns.
+
+Randomization should be bounded, typically:
+
+Plain Text
+1
+Target ± 15-20%
+Show more lines
+
+to avoid distorting retention schedules.
+
+4. Scripture Capture
+
+Users should be able to encounter Scripture anywhere and add it immediately.
+
+Examples:
+
+John 3:16
+Romans 8:28
+Psalm 119:105
+Colossians 3:16
+
+Adding a verse does not require immediate memorization.
+
+The application serves as a personal Scripture collection as well as a memory system.
+
+5. Agenda System
+
+An Agenda allows Scripture to be associated with an external purpose or target date.
+
+Examples:
+
+Awana
+Church
+Bible Study
+Sermon Preparation
+School Assignment
+Children's Ministry
+
+Example:
+
+Plain Text
+1
+Awana Week 4
+2
+ 
+3
+Verse:
+4
+Ephesians 6:1
+5
+ 
+6
+Start:
+7
+September 8
+8
+ 
+9
+Goal:
+10
+September 14
+Show more lines
+
+Agendas represent goals rather than requirements.
+
+Missing a target date should never result in punitive messaging.
+
+Instead:
+
+"Let's keep practicing this verse."
+
+6. Operational Memory Queues
+
+The application operates through three primary queues.
+
+New Queue
+
+Verses not yet actively being memorized.
+
+Retention Queue
+
+Verses that have entered long-term maintenance.
+
+Relearn Queue
+
+Verses that previously demonstrated stable recall but need reinforcement.
+
+Plain Text
+1
+AGENDA
+2
+|
+3
++-------------+-------------+
+4
+| | |
+5
+v v v
+6
+NEW QUEUE RELEARN QUEUE RETENTION
+7
+| | |
+8
++-------------+-------------+
+9
+|
+10
+v
+11
+RECITE
+12
+|
+13
+MEMORY RESULT
+14
+|
+15
++---------+---------+
+16
+| |
+17
+v v
+18
+SUCCESS RELEARN
+19
+| |
+20
+v |
+21
+RETENTION <-------------+
+Show more lines
+7. Learning States and Memory Progression
+
+The application should distinguish between a verse being learned and a verse being retained.
+
+Memorization is not the finish line.
+
+Retention is the goal.
+
+Interested
+
+"I want to memorize this someday."
+
+Scheduled
+
+"This verse has been added to my learning plan."
+
+Learning
+
+"I am actively learning this verse."
+
+Learned
+
+"I can reliably retrieve this verse without substantial assistance."
+
+A learned verse is ready to enter long-term retention.
+
+Learned does not mean permanent mastery.
+
+Retention
+
+"I am maintaining and strengthening this Scripture over time."
+
+Relearning
+
+"I previously knew this verse but need to strengthen it again."
+
+Relearning is a normal part of memory development.
+
+It should never be framed as failure.
+
+8. Criteria for Learned Status
+
+A verse should not become Learned after a single successful recitation.
+
+For MVP Version 1:
+
+A verse becomes Learned when:
+
+Requirement 1
+
+Three successful retrievals have occurred.
+
+Requirement 2
+
+Those retrievals occurred on separate review occasions.
+
+Requirement 3
+
+The user evaluated each retrieval as:
+
+✅ I know it
+
+rather than:
+
+⚠ I needed a little help
+
+or
+
+🔄 Let's relearn this one
+
+Example:
+
+Plain Text
+1
+Day 1
+2
+I know it
+3
+ 
+4
+Day 3
+5
+I know it
+6
+ 
+7
+Day 7
+8
+I know it
+9
+ 
+10
+→ Learned
+11
+→ Retention Queue
+Show more lines
+9. Recite: The Core Experience
+
+Recite is the defining activity of the application.
+
+Example:
+
+Plain Text
+1
+Romans 12:2
+2
+ 
+3
+🎙 RECITE
+4
+``
+Show more lines
+
+The verse is hidden.
+
+The user attempts retrieval.
+
+The verse is shown.
+
+The user evaluates performance.
+
+This focuses the application on memory rather than reading.
+
+10. Recitation Evaluation
+
+After every retrieval attempt the user evaluates performance.
+
+I Know It
+
+The verse was recalled accurately.
+
+Minor hesitation is acceptable.
+
+Result:
+
+Successful retrieval
+Advance memory strength
+Potentially increase interval
+I Needed a Little Help
+
+Most of the verse was recalled.
+
+Assistance was needed.
+
+Result:
+
+Not a failure
+Short review interval
+Continue strengthening
+Let's Relearn This One
+
+Retrieval was unsuccessful.
+
+Result:
+
+Move to Relearn Queue
+Preserve history
+Provide encouragement
+
+Example:
+
+"No problem. Let's work on this one again."
+
+11. Progressive Recall Exercises
+
+Different exercise types are useful at different learning stages.
+
+Level 1
+
+Recognition
+
+Level 2
+
+Fill in the Blank
+
+Level 3
+
+Phrase Recall
+
+Level 4
+
+First-Letter Prompts
+
+Level 5
+
+Reference → Verse
+
+Level 6
+
+Verse → Reference
+
+Level 7
+
+Full Recitation
+
+The application should increasingly encourage independent recall.
+
+12. Future Evidence-Based Learning Model
+
+Future versions may require evidence across multiple exercise types.
+
+Example:
+
+Exercise	CompletedRecognition	✓
+Fill Blank	✓
+Phrase Recall	✓
+Reference → Verse	✓
+Full Recitation	✓
+
+This produces greater confidence that the verse can genuinely be retrieved.
+
+13. Relearning
+
+When a verse cannot be recalled reliably:
+
+Plain Text
+1
+Retention
+2
+↓
+3
+Failed Retrieval
+4
+↓
+5
+Relearn Queue
+6
+↓
+7
+Successful Retrieval
+8
+↓
+9
+Retention
+Show more lines
+
+History is preserved.
+
+Example:
+
+Plain Text
+1
+10 successful recalls
+2
+Maximum interval: 90 days
+3
+ 
+4
+↓
+5
+ 
+6
+Failed retrieval
+7
+ 
+8
+↓
+9
+ 
+10
+Relearn
+11
+ 
+12
+↓
+13
+ 
+14
+Return to retention
+Show more lines
+
+The verse is not treated like a brand-new verse.
+
+14. Memory Strength Model
+
+The application may track memory strength internally.
+
+Example:
+
+Plain Text
+1
+0-20 Learning
+2
+21-40 Emerging
+3
+41-60 Learned
+4
+61-80 Strong
+5
+81-100 Very Strong
+Show more lines
+
+Users do not need to see numerical scores.
+
+Instead:
+
+Plain Text
+1
+Strong
+2
+ 
+3
+Growing
+4
+ 
+5
+Ready for Another Look
+Show more lines
+15. Positive User Experience
+
+Avoid:
+
+Failed
+Wrong
+Overdue
+Behind
+Missed Goal
+Forgotten
+Bad Memory
+
+Prefer:
+
+Let's try that again.
+Your Scripture is waiting.
+Ready for another review.
+Keep practicing.
+You're making progress.
+Let's relearn this one.
+16. Self-Pacing
+
+Suggested learning modes:
+
+Relaxed
+
+1-2 verses/month
+
+Steady
+
+1 verse/week
+
+Active
+
+2-3 verses/week
+
+Custom
+
+User-defined pace.
+
+Users may also pause new verse introductions while continuing retention reviews.
+
+17. No Punishment for Absence
+
+If a user returns after weeks or months away:
+
+Avoid:
+
+"43 reviews overdue"
+
+Instead:
+
+"Welcome back."
+
+"Let's start with a few Scriptures."
+
+The scheduler should automatically rebalance review priorities.
+
+18. Daily Experience
+
+Example Home Screen:
+
+Plain Text
+1
+Today's Scripture Memory
+2
+ 
+3
+NEW
+4
+ 
+5
+Ephesians 6:1
+6
+Let's learn this one.
+7
+ 
+8
+REMEMBER
+9
+ 
+10
+Psalm 119:105
+11
+🎙 RECITE
+12
+ 
+13
+REMEMBER
+14
+ 
+15
+Romans 12:2
+16
+🎙 RECITE
+17
+ 
+18
+MEMORY CHALLENGE
+19
+ 
+20
+Can you remember a Scripture you've learned previously?
+Show more lines
+
+No quotas.
+
+No guilt.
+
+Just opportunities.
+
+19. Surprise Memory Challenge
+
+The application should occasionally present a random learned verse.
+
+Example:
+
+Plain Text
+1
+Memory Challenge
+2
+ 
+3
+Romans 8:28
+4
+ 
+5
+🎙 RECITE
+Show more lines
+
+Independent of scheduled reviews.
+
+Purpose:
+
+Test actual retention.
+
+20. Heart Review
+
+An advanced retrieval exercise.
+
+Prompt:
+
+"Recite any Scripture you know."
+
+No hints.
+
+No reference.
+
+No prompts.
+
+This most closely simulates real-world recall.
+
+21. Positive Retention Metrics
+
+Avoid grade-like statistics.
+
+Instead of:
+
+Plain Text
+1
+82% Success
+Show more lines
+
+Prefer:
+
+Plain Text
+1
+47 Scriptures
+2
+ 
+3
+31 Strong
+4
+11 Learning
+5
+5 Relearning
+Show more lines
+
+Example:
+
+Plain Text
+1
+Psalm 119:105
+2
+ 
+3
+Status: Strong
+4
+ 
+5
+Successful Recalls: 8
+6
+Longest Interval: 63 Days
+7
+Last Recall: 21 Days Ago
+Show more lines
+22. Bible Version Selection
+
+A memorization record must include:
+
+Reference
+Translation
+Text
+
+Example:
+
+Plain Text
+1
+John 3:16 (ESV)
+2
+ 
+3
+John 3:16 (KJV)
+Show more lines
+
+These are distinct memorization records.
+
+23. Translation Architecture
+Plain Text
+1
+Memorization Engine
+2
+|
+3
+v
+4
+Bible Text Layer
+5
+|
+6
++----+----+----+
+7
+| | | |
+8
+ESV KJV WEB NAB
+Show more lines
+
+The memory engine should be translation-neutral.
+
+24. Completely Free Application
+
+Requirements:
+
+No subscription
+No advertisements
+No paywall
+No data monetization
+No mandatory account
+25. User-Owned Data
+
+Principle:
+
+"Your Scripture memory belongs to you."
+
+The application should allow export, backup, and portability.
+
+26. Local Storage
+
+Available storage options:
+
+Device Only
+Google Drive
+OneDrive
+iCloud
+Dropbox (future)
+
+Local-only operation must remain fully functional.
+
+27. Cloud Sync
+
+Cloud synchronization should use user-controlled storage providers rather than developer-hosted databases whenever possible.
+
+28. Backup vs Sync
+
+Backup and Sync are different functions.
+
+Backup
+
+Protects against loss.
+
+Sync
+
+Keeps multiple devices consistent.
+
+29. Offline-First Design
+
+Users must be able to:
+
+Learn Scripture
+Recite Scripture
+Add verses
+Update memory records
+View agendas
+Continue retention schedules
+
+without Internet access.
+
+30. Synchronization History Model
+
+Store review events rather than merely current state.
+
+Example:
+
+Plain Text
+1
+Review Event
+2
+ 
+3
+Verse
+4
+Timestamp
+5
+Device
+6
+Result
+7
+Difficulty
+8
+ 
+Show more lines
+
+This allows intelligent conflict resolution.
+
+31. Family Support (Future)
+
+Example:
+
+Plain Text
+1
+Voss Family
+2
+ 
+3
+Dad
+4
+87 Scriptures
+5
+ 
+6
+Mom
+7
+63 Scriptures
+8
+ 
+9
+Child 1
+10
+24 Scriptures
+11
+ 
+12
+Child 2
+13
+18 Scriptures
+14
+``
+Show more lines
+
+Each person maintains independent memory history.
+
+32. Collections
+
+Examples:
+
+Salvation
+Trinity
+Family
+Great Commission
+Personal Favorites
+Awana
+
+A verse may belong to multiple collections.
+
+33. Awana and Children's Mode
+
+Potential exercises:
+
+Missing Word
+Word Scramble
+First Letters
+Reference Match
+Progressive Erase
+Recite
+
+Designed to make memorization active and enjoyable.
+
+34. Data Model
+Verse
+Plain Text
+1
+id
+2
+book
+3
+chapter
+4
+verse_start
+5
+verse_end
+6
+ 
+Show more lines
+Memorization
+Plain Text
+1
+id
+2
+verse_id
+3
+status
+4
+memory_strength
+5
+created_at
+6
+started_at
+7
+learned_at
+8
+last_reviewed_at
+9
+next_review_at
+Show more lines
+Review
+Plain Text
+1
+id
+2
+memorization_id
+3
+timestamp
+4
+result
+5
+ 
+Show more lines
+Agenda
+Plain Text
+1
+id
+2
+title
+3
+start_date
+4
+target_date
+5
+priority
+Show more lines
+Collection
+Plain Text
+1
+id
+2
+name
+3
+description
+Show more lines
+35. Scheduling Engine
+
+Inputs:
+
+Prior successes
+Difficulty
+Time since review
+Learning state
+Longest successful interval
+User pace
+Relearning history
+Agenda deadlines
+Memory strength
+Controlled randomness
+
+The scheduling engine should be replaceable.
+
+36. Memory Algorithm Research Framework
+
+Algorithms that may be tested:
+
+Fixed
+Plain Text
+1
+1, 7, 14, 30, 60
+Show more lines
+Expanding
+Plain Text
+1
+1, 3, 7, 14, 30, 60
+Show more lines
+Randomized
+Plain Text
+1
+Target ± 15%
+Show more lines
+Adaptive
+
+Interval determined by estimated recall probability.
+
+37. Minimum Viable Product (MVP)
+Required
+Select Bible version
+Search/add Scripture
+New Queue
+Learn Verse
+Recite Verse
+Self-evaluate retrieval
+Relearn Queue
+Retention Queue
+Learned-state criteria
+Randomized scheduling
+User pacing controls
+Local storage
+38. Future Features
+Speech recognition
+Automatic scoring
+Family profiles
+Church/group plans
+Awana curriculum integration
+Shared collections
+More translations
+Memory analytics
+Strength visualization
+Random challenges
+Children's games
+Audio Scripture
+Music-assisted memorization
+Handwriting recall exercises
+Cross-device synchronization improvements
+Final Product Vision
+
+The application exists for one purpose:
+
+To help people hide Scripture in their hearts through retrieval, reinforcement, and long-term retention.
+
+Success is not measured by streaks, reviews completed, or verses collected.
+
+Success is measured by whether a person can faithfully recall God's Word months and years after first learning it.

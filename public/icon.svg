@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#3730a3"/>
+  <!-- radiating light -->
+  <g stroke="#fde68a" stroke-width="10" stroke-linecap="round" opacity="0.85">
+    <line x1="256" y1="70" x2="256" y2="108"/>
+    <line x1="150" y1="112" x2="176" y2="140"/>
+    <line x1="362" y1="112" x2="336" y2="140"/>
+  </g>
+  <!-- flame -->
+  <path d="M256 132c34 40 46 66 46 92 0 30-22 52-46 52s-46-22-46-52c0-26 12-52 46-92z" fill="#fde68a"/>
+  <!-- lamp body -->
+  <path d="M180 276c0-16 12-24 26-24h100c14 0 26 8 26 24 0 46-34 84-76 84h0c-42 0-76-38-76-84z" fill="#fef3c7"/>
+  <!-- base -->
+  <rect x="216" y="368" width="80" height="18" rx="6" fill="#fef3c7"/>
+  <rect x="196" y="392" width="120" height="20" rx="8" fill="#fef3c7"/>
+</svg>
