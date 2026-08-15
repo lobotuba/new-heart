@@ -67,9 +67,13 @@ export function strengthLabel(strength: number): string {
   return STRENGTH_BANDS.find((band) => clamped >= band.min && clamped <= band.max)?.label ?? 'Learning'
 }
 
-export type BibleTranslationCode = 'KJV' | 'WEB'
+export type BibleTranslationCode = 'KJV' | 'WEB' | 'ESV'
 
-export const BIBLE_TRANSLATIONS: { code: BibleTranslationCode; displayName: string }[] = [
-  { code: 'KJV', displayName: 'King James Version' },
-  { code: 'WEB', displayName: 'World English Bible' },
+export const BIBLE_TRANSLATIONS: { code: BibleTranslationCode; displayName: string; bundledText: boolean }[] = [
+  { code: 'KJV', displayName: 'King James Version', bundledText: true },
+  { code: 'WEB', displayName: 'World English Bible', bundledText: true },
+  // ESV is Crossway-copyrighted (not public domain like KJV/WEB), so no ESV text ships in this
+  // app — the Starter Pack routes ESV picks to Manual Entry, pre-filled, for you to paste your
+  // own verified text (e.g. from biblegateway.com or esv.org), consistent with Crossway's terms.
+  { code: 'ESV', displayName: 'English Standard Version', bundledText: false },
 ]

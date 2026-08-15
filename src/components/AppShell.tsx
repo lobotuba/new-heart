@@ -44,7 +44,7 @@ export default function AppShell() {
 
       <main className="max-w-4xl mx-auto px-4 py-6">
         {reciteId != null ? (
-          <Recite memorizationId={reciteId} onDone={closeRecite} />
+          <Recite key={reciteId} memorizationId={reciteId} onDone={closeRecite} />
         ) : (
           <>
             {screen === 'home' && <Home onRecite={setReciteId} onNavigate={setScreen} />}

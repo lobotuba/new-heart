@@ -1,11 +1,12 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { ExerciseType, LearningState, ReviewResult } from '../domain/enums'
+import { ExerciseType, ReviewResult } from '../domain/enums'
 import { verseReference } from '../domain/models'
+import { PASS_THRESHOLD, recallScore } from '../domain/recallScore'
 import * as repo from '../repository/repository'
 import { Button, Card } from './ui'
 
-type Phase = 'read' | 'hidden' | 'revealed' | 'result'
+type Phase = 'read' | 'recall' | 'revealed' | 'result'
 
 const RESULT_COPY: Record<ReviewResult, { heading: string; body: string }> = {
   [ReviewResult.KnowIt]: { heading: "You've got this.", body: "You're making progress." },
@@ -13,40 +14,40 @@ const RESULT_COPY: Record<ReviewResult, { heading: string; body: string }> = {
   [ReviewResult.Relearn]: { heading: "Let's relearn this one.", body: 'No problem. Every verse takes a few passes.' },
 }
 
-/** Masks roughly a third of the words for the Fill-in-the-Blank exercise (spec section 11, level 2). */
-function maskText(text: string): string {
-  const words = text.split(' ')
-  return words
-    .map((word, i) => {
-      const bare = word.replace(/[.,;:!?"']/g, '')
-      if (bare.length > 3 && i % 3 === 1) {
-        return '_'.repeat(bare.length) + word.slice(bare.length)
-      }
-      return word
-    })
-    .join(' ')
+const MAX_HINT_FRACTION = 0.6
+
+function scoreBand(score: number): { label: string; tone: string } {
+  if (score >= PASS_THRESHOLD) return { label: 'Nice recall!', tone: 'text-emerald-600' }
+  if (score >= 0.5) return { label: 'Getting there — a bit more to go.', tone: 'text-amber-600' }
+  return { label: "Let's build this up more.", tone: 'text-slate-500' }
 }
 
 export default function Recite({ memorizationId, onDone }: { memorizationId: number; onDone: () => void }) {
   const detail = useLiveQuery(() => repo.memorizationDetail(memorizationId), [memorizationId])
   const reviews = useLiveQuery(() => repo.reviewsFor(memorizationId), [memorizationId])
 
-  const isFirstExposure = reviews != null && reviews.length === 0
-  const exerciseType = useMemo<ExerciseType>(() => {
-    if (isFirstExposure) return ExerciseType.FullRecitation
-    if (detail?.memorization.status === LearningState.Learning) return ExerciseType.FillInTheBlank
-    return ExerciseType.FullRecitation
-  }, [isFirstExposure, detail?.memorization.status])
-
   const [phase, setPhase] = useState<Phase | null>(null)
+  const [attempt, setAttempt] = useState('')
+  const [checkedScore, setCheckedScore] = useState<number | null>(null)
+  const [hintWordCount, setHintWordCount] = useState(0)
   const [result, setResult] = useState<ReviewResult | null>(null)
 
   if (!detail || reviews == null) {
     return <Card className="text-center text-slate-400">Loading…</Card>
   }
 
-  const currentPhase = phase ?? (isFirstExposure ? 'read' : 'hidden')
+  const isFirstExposure = reviews.length === 0
+  const exerciseType = ExerciseType.FullRecitation
+  const currentPhase = phase ?? (isFirstExposure ? 'read' : 'recall')
   const { verse } = detail
+  const verseWords = verse.text.split(' ')
+  const maxHintWords = Math.max(1, Math.ceil(verseWords.length * MAX_HINT_FRACTION))
+
+  function checkRecall() {
+    const score = recallScore(attempt, verse.text)
+    setCheckedScore(score)
+    if (score >= PASS_THRESHOLD) setPhase('revealed')
+  }
 
   async function evaluate(chosen: ReviewResult) {
     await repo.recordReview(memorizationId, chosen, exerciseType)
@@ -63,26 +64,60 @@ export default function Recite({ memorizationId, onDone }: { memorizationId: num
         <>
           <p className="font-serif-scripture text-lg leading-relaxed text-slate-800 mb-6">{verse.text}</p>
           <p className="text-slate-500 text-sm mb-4">Read it over a couple of times, then give recall a try.</p>
-          <Button onClick={() => setPhase('hidden')}>I'm ready to recall →</Button>
+          <Button onClick={() => setPhase('recall')}>I'm ready to recall →</Button>
         </>
       )}
 
-      {currentPhase === 'hidden' && (
+      {currentPhase === 'recall' && (
         <>
-          {exerciseType === ExerciseType.FillInTheBlank ? (
-            <p className="font-serif-scripture text-lg leading-relaxed text-slate-800 mb-6">{maskText(verse.text)}</p>
-          ) : (
-            <div className="rounded-xl bg-brand-50 text-brand-700 py-10 text-center mb-6">
-              🎙 <span className="font-medium">Recite {verseReference(verse)} from memory</span>
-            </div>
+          {hintWordCount > 0 && (
+            <p className="text-sm text-slate-500 mb-3">
+              Hint: <span className="font-serif-scripture text-slate-700">{verseWords.slice(0, hintWordCount).join(' ')}…</span>
+            </p>
           )}
-          <Button onClick={() => setPhase('revealed')}>Show Answer</Button>
+          <textarea
+            className="w-full rounded-xl border border-slate-200 px-3 py-2.5 min-h-28 font-serif-scripture text-lg mb-3"
+            placeholder="Type what you remember…"
+            value={attempt}
+            onChange={(e) => {
+              setAttempt(e.target.value)
+              setCheckedScore(null)
+            }}
+          />
+          {checkedScore != null && checkedScore < PASS_THRESHOLD && (
+            <p className={`text-sm mb-3 ${scoreBand(checkedScore).tone}`}>{scoreBand(checkedScore).label}</p>
+          )}
+          <div className="flex flex-wrap gap-2 mb-2">
+            <Button onClick={checkRecall} disabled={attempt.trim().length === 0}>Check My Recall</Button>
+            <Button
+              variant="secondary"
+              disabled={hintWordCount >= maxHintWords}
+              onClick={() => setHintWordCount((n) => Math.min(maxHintWords, n + 1))}
+            >
+              💡 Hint
+            </Button>
+          </div>
+          <button className="text-sm text-slate-400 underline mt-2" onClick={() => setPhase('revealed')}>
+            I'd rather just see it
+          </button>
         </>
       )}
 
       {currentPhase === 'revealed' && (
         <>
-          <p className="font-serif-scripture text-lg leading-relaxed text-slate-800 mb-6">{verse.text}</p>
+          {checkedScore != null && (
+            <p className={`text-sm font-medium mb-3 ${scoreBand(checkedScore).tone}`}>{scoreBand(checkedScore).label}</p>
+          )}
+          {attempt.trim().length > 0 && (
+            <div className="mb-4">
+              <p className="text-xs uppercase tracking-wide text-slate-400 mb-1">Your recall</p>
+              <p className="text-slate-500">{attempt}</p>
+            </div>
+          )}
+          <div className="mb-6">
+            <p className="text-xs uppercase tracking-wide text-slate-400 mb-1">The verse</p>
+            <p className="font-serif-scripture text-lg leading-relaxed text-slate-800">{verse.text}</p>
+          </div>
           <p className="text-slate-500 text-sm mb-4">How did that go?</p>
           <div className="flex flex-col gap-2">
             <Button variant="primary" onClick={() => evaluate(ReviewResult.KnowIt)}>✅ I Know It</Button>
